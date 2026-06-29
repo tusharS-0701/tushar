@@ -221,6 +221,34 @@
     padding-top: 1rem;
   }
 
+  .jobs-panel {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 48rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.6rem 0;
+  }
+
+  .jobs-panel__status {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .jobs-panel__copy {
+    max-width: 38rem;
+    font-size: 1.02rem;
+    line-height: 1.9;
+    color: var(--color-muted);
+  }
+
   .ledger-panel__top {
     display: flex;
     align-items: center;

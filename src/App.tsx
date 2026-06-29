@@ -26,6 +26,7 @@ const navItems: NavItem[] = [
   { href: '#top', label: 'Home' },
   { href: '#writing', label: 'Writing' },
   { href: '#lab', label: 'Lab' },
+  { href: '#jobs', label: 'Jobs' },
   { href: '#notes', label: 'Notes' },
   { href: '#about', label: 'About' },
 ]
@@ -112,6 +113,7 @@ function App() {
           <LabSection />
           <WritingSection />
           <AboutSection />
+          <JobsSection />
           <ContactSection />
         </main>
         <Footer />
@@ -490,11 +492,36 @@ function ContactSection() {
           </p>
           <a
             href="mailto:tusharsharma.workspace@gmail.com"
-            className="group mt-8 inline-flex items-center gap-4 text-[1.1rem] text-[var(--color-accent)] transition-colors hover:text-[var(--color-text)] sm:text-[1.6rem]"
+            className="group mt-8 flex max-w-full flex-col items-start gap-3 text-[0.98rem] text-[var(--color-accent)] transition-colors hover:text-[var(--color-text)] min-[360px]:text-[1.06rem] sm:inline-flex sm:max-w-none sm:flex-row sm:items-center sm:gap-4 sm:text-[1.6rem]"
           >
-            <span className="link-underline">tusharsharma.workspace@gmail.com</span>
-            <ArrowRightIcon className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            <span className="link-underline break-all">tusharsharma.workspace@gmail.com</span>
+            <ArrowRightIcon className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
+        </div>
+      </Reveal>
+    </Section>
+  )
+}
+
+function JobsSection() {
+  return (
+    <Section id="jobs" className="section-divider">
+      <SectionLead
+        index="05"
+        eyebrow="Jobs"
+        title="Open roles are coming soon."
+        description="Future hiring will live here, once the right problems are ready for the right people."
+      />
+      <Reveal>
+        <div className="jobs-panel">
+          <div className="jobs-panel__status">
+            <span className="status-dot" />
+            <span>Coming soon</span>
+          </div>
+          <p className="jobs-panel__copy">
+            No public openings yet. When the time is right, this section will turn into a
+            focused list of roles worth building around.
+          </p>
         </div>
       </Reveal>
     </Section>
