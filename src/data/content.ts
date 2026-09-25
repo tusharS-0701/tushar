@@ -19,6 +19,7 @@ export type Project = {
 export type Dispatch = {
   title: string
   date: string
+  href?: string
 }
 
 const currentYear = new Date().getFullYear()
@@ -39,7 +40,7 @@ export const siteMeta = {
 export const navItems: NavItem[] = [
   { href: '#top', label: 'Home' },
   { href: '#about', label: 'About' },
-  { href: '#journal', label: 'Journal' },
+  { href: '/blog', label: 'Journal' },
   { href: '#projects', label: 'Projects' },
   { href: '#notes', label: 'Notes' },
   { href: '#now', label: 'Now' },
