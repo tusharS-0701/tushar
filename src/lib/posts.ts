@@ -14,6 +14,26 @@ export type Post = {
   publishedAt: string | null
 }
 
+export type SiteLinks = {
+  x: string
+  instagram: string
+  linkedin: string
+  github: string
+  email: string
+  resume: string
+  support: string
+}
+
+export const defaultSiteLinks: SiteLinks = {
+  x: '',
+  instagram: 'https://www.instagram.com/tushar07.sh/',
+  linkedin: 'https://www.linkedin.com/in/tusharsharma0711/',
+  github: 'https://github.com/side-quest2001',
+  email: 'tusharsharma123456.k20@gmail.com',
+  resume: 'https://drive.google.com/file/d/1R-MtU9szsqtFahJBXpDOCMfY3szmDOHb/view?usp=drive_link',
+  support: '',
+}
+
 const collectionName = 'posts'
 
 function envValue(value: string | undefined) {
@@ -121,4 +141,26 @@ export async function savePost(post: Post, previousSlug?: string) {
 
 export async function removePost(slug: string) {
   await db().collection(collectionName).doc(slug).delete()
+}
+
+export async function getSiteLinks(): Promise<SiteLinks> {
+  if (!isDatabaseConfigured()) return defaultSiteLinks
+  try {
+    const snapshot = await db().collection('settings').doc('site-links').get()
+    if (!snapshot.exists) return defaultSiteLinks
+    const saved = snapshot.data() as Partial<SiteLinks>
+    return Object.fromEntries(
+      Object.entries(defaultSiteLinks).map(([key, fallback]) => [
+        key,
+        typeof saved[key as keyof SiteLinks] === 'string' ? saved[key as keyof SiteLinks] : fallback,
+      ]),
+    ) as SiteLinks
+  } catch (error) {
+    if (isMissingDatabase(error)) return defaultSiteLinks
+    throw error
+  }
+}
+
+export async function saveSiteLinks(links: SiteLinks) {
+  await db().collection('settings').doc('site-links').set(links)
 }

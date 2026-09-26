@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import '../index.css'
+import { getSiteLinks, type SiteLinks } from '../lib/posts'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tushar.me'),
@@ -30,7 +31,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#ffffff' }
 
-const profileStructuredData = {
+function profileStructuredData(links: SiteLinks) {
+  return {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
   '@id': 'https://tushar.me/#profile',
@@ -47,11 +49,7 @@ const profileStructuredData = {
       width: 512,
       height: 512,
     },
-    sameAs: [
-      'https://www.linkedin.com/in/tusharsharma0711/',
-      'https://github.com/side-quest2001',
-      'https://www.instagram.com/tushar07.sh/',
-    ],
+    sameAs: [links.x, links.linkedin, links.github, links.instagram].filter(Boolean),
     jobTitle: 'Software Engineer',
     address: {
       '@type': 'PostalAddress',
@@ -59,16 +57,18 @@ const profileStructuredData = {
       addressCountry: 'IN',
     },
   },
+  }
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const siteLinks = await getSiteLinks()
   return (
     <html lang="en">
       <body>
         {children}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData).replace(/</g, '\\u003c') }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData(siteLinks)).replace(/</g, '\\u003c') }}
         />
       </body>
     </html>

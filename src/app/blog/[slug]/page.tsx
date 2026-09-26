@@ -1,22 +1,33 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ArrowRight, AtSign as Twitter, Briefcase as Linkedin, CodeXml as Github, Moon } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { getPost } from '../../../lib/posts'
+import { ArticleActions } from '../../../components/article/ArticleActions'
+import { KafkaDiagram } from '../../../components/article/KafkaDiagram'
+import { getPost, getSiteLinks, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
-
 type Props = { params: Promise<{ slug: string }> }
+
+const formatDate = (value: string | null) => value ? new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : ''
+const readingTime = (body: string) => Math.max(1, Math.ceil(body.trim().split(/\s+/).length / 220))
+function textFromNode(node: ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(textFromNode).join('')
+  if (node && typeof node === 'object' && 'props' in node) return textFromNode((node as { props: { children?: ReactNode } }).props.children)
+  return ''
+}
+const headings = (body: string) => [...body.matchAll(/^##\s+(.+)$/gm)].map((match) => ({ label: match[1].replace(/[*_`]/g, ''), id: slugify(match[1]) }))
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = await getPost(slug)
   if (!post || post.status !== 'published') return { title: 'Article not found', robots: { index: false } }
   return {
-    title: `${post.title} | Tushar Sharma`,
-    description: post.description,
-    keywords: post.tags,
+    title: `${post.title} | Tushar Sharma`, description: post.description, keywords: post.tags,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: { type: 'article', title: post.title, description: post.description, url: `/blog/${post.slug}`, publishedTime: post.publishedAt || undefined, modifiedTime: post.updatedAt, authors: ['Tushar Sharma'], tags: post.tags },
     twitter: { card: 'summary_large_image', title: post.title, description: post.description },
@@ -25,26 +36,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params
-  const post = await getPost(slug)
+  const [post, allPosts, siteLinks] = await Promise.all([getPost(slug), listPosts(), getSiteLinks()])
   if (!post || post.status !== 'published') notFound()
   const url = `https://tushar.me/blog/${post.slug}`
-  const structuredData = {
-    '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title,
-    description: post.description, datePublished: post.publishedAt, dateModified: post.updatedAt,
-    author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://tushar.me' },
-    mainEntityOfPage: url, url, keywords: post.tags.join(', '),
-  }
-  return <main className="app-shell min-h-screen px-4 py-10 sm:py-16">
-    <article className="paper blog-page border border-[var(--color-rule)] p-6 sm:p-12">
-      <Link href="/blog" className="arrow-link">← All articles</Link>
-      <header className="mt-12 border-b border-[var(--color-rule)] pb-8">
-        <p className="eyebrow">{post.publishedAt && new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} · Tushar Sharma</p>
-        <h1 className="hero-headline mt-4">{post.title}</h1>
-        <p className="section-copy mt-5">{post.description}</p>
-        <p className="mt-5 font-mono text-xs uppercase tracking-widest text-[var(--color-accent)]">{post.tags.join(' · ')}</p>
-      </header>
-      <div className="blog-prose mt-10"><ReactMarkdown remarkPlugins={[remarkGfm]}>{post.body}</ReactMarkdown></div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
-    </article>
+  const toc = headings(post.body)
+  const related = allPosts.filter((item) => item.slug !== post.slug).slice(0, 2)
+  const minutes = readingTime(post.body)
+  const isKafkaPost = /kafka|partition/i.test(`${post.title} ${post.tags.join(' ')}`)
+  const structuredData = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, datePublished: post.publishedAt, dateModified: post.updatedAt, author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://tushar.me' }, mainEntityOfPage: url, url, keywords: post.tags.join(', ') }
+  const Heading = ({ children }: { children?: ReactNode }) => <h2 id={slugify(textFromNode(children))}>{children}</h2>
+
+  return <main className="article-page">
+    <header className="article-site-header"><div className="article-progress"><span /></div><div className="article-header-inner"><Link href="/" className="article-brand">Tushar Sharma</Link><nav aria-label="Primary"><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/now">Now</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a><button aria-label="Change color theme"><Moon /></button></nav></div></header>
+    <div className="article-layout">
+      <ArticleActions url={url} />
+      <article className="article-main" id="article">
+        <header className="article-lead"><p className="article-category">{post.tags[0] || 'Ideas'}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-byline"><img src="/pfp.png" alt="Tushar Sharma"/><p><strong>Tushar Sharma</strong><span>{formatDate(post.publishedAt)} · {minutes} min read</span></p></div></header>
+        {isKafkaPost && <KafkaDiagram />}
+        <div className="article-prose"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h2: Heading }}>{post.body}</ReactMarkdown></div>
+        <section className="article-author"><img src="/pfp.png" alt="Tushar Sharma"/><div><h2>Tushar Sharma</h2><p>Programmer | Building in Public | AI · Systems · Startups</p><p>I’m a software engineer who loves building things, exploring distributed systems, and writing about what I learn.</p></div><Link href="/blog">View all posts <ArrowRight /></Link></section>
+      </article>
+      <aside className="article-toc"><strong>On this page</strong><nav>{toc.length ? toc.map((item, index) => <a className={index === 0 ? 'active' : ''} href={`#${item.id}`} key={item.id}>{item.label}</a>) : <a className="active" href="#article">Introduction</a>}</nav></aside>
+    </div>
+    <section className="article-related"><header><h2>Continue reading</h2><Link href="/blog">More posts <ArrowRight /></Link></header><div>{related.map((item, index) => <Link href={`/blog/${item.slug}`} key={item.slug} className="related-card"><span><small>{item.tags[0] || 'Ideas'}</small><strong>{item.title}</strong><p>{item.description}</p><time>{formatDate(item.publishedAt)} · {readingTime(item.body)} min read</time></span><i aria-hidden>{index === 0 ? '⌘' : '→'}</i></Link>)}</div></section>
+    <footer className="article-footer"><div><strong>Tushar Sharma</strong><nav><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/now">Now</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a></nav><span>{siteLinks.github&&<a href={siteLinks.github} aria-label="GitHub"><Github/></a>}{siteLinks.linkedin&&<a href={siteLinks.linkedin} aria-label="LinkedIn"><Linkedin/></a>}{siteLinks.x&&<a href={siteLinks.x} aria-label="X / Twitter"><Twitter/></a>}<Moon /></span></div></footer>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
   </main>
 }

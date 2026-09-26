@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { checkPassword, clearAdminSession, isAdmin, isAdminConfigured, setAdminSession } from '../../lib/admin-auth'
-import { getDatabaseStatus, getPost, removePost, savePost, slugify, validSlug } from '../../lib/posts'
+import { getDatabaseStatus, getPost, removePost, savePost, saveSiteLinks, slugify, validSlug } from '../../lib/posts'
 
 function field(data: FormData, key: string) {
   return String(data.get(key) || '').trim()
@@ -62,4 +62,37 @@ export async function deletePost(data: FormData) {
   revalidatePath(`/blog/${slug}`)
   revalidatePath('/sitemap.xml')
   redirect('/admin?deleted=1')
+}
+
+function validWebUrl(value: string) {
+  if (!value) return true
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
+export async function updateSiteLinks(data: FormData) {
+  if (!await isAdmin()) redirect('/admin')
+  if (await getDatabaseStatus() !== 'ready') redirect('/admin?error=Firestore%20database%20is%20not%20ready')
+
+  const links = {
+    x: field(data, 'x'),
+    instagram: field(data, 'instagram'),
+    linkedin: field(data, 'linkedin'),
+    github: field(data, 'github'),
+    email: field(data, 'email'),
+    resume: field(data, 'resume'),
+    support: field(data, 'support'),
+  }
+  const webLinks = [links.x, links.instagram, links.linkedin, links.github, links.resume, links.support]
+  if (!webLinks.every(validWebUrl) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(links.email)) {
+    redirect('/admin?error=Enter%20valid%20web%20and%20email%20addresses')
+  }
+
+  await saveSiteLinks(links)
+  revalidatePath('/', 'layout')
+  redirect('/admin?linksSaved=1')
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, BrainCircuit, ChevronLeft, ChevronRight, Flame, Mail, Map, Newspaper, PanelTop, Rss, Search, Settings, Sparkles, TrendingUp } from 'lucide-react'
-import { listPosts } from '../../lib/posts'
+import { getSiteLinks, listPosts } from '../../lib/posts'
 
 export const revalidate = 300
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ const fmt=(date:string|null)=>date?new Date(date).toLocaleDateString('en-US',{mo
 const mins=(post:{description:string})=>Math.max(5,Math.ceil(post.description.split(/\s+/).length/35))
 
 export default async function BlogPage(){
- const live=await listPosts()
+ const [live,siteLinks]=await Promise.all([listPosts(),getSiteLinks()])
  const posts:BlogCard[]=live.length?live:fallback
  const liveSlugs=new Set(live.map(post=>post.slug))
  const href=(slug:string)=>liveSlugs.has(slug)?'/blog/'+slug:'/blog'
@@ -31,8 +31,8 @@ export default async function BlogPage(){
  const latest=posts.slice(1,4).length===3?posts.slice(1,4):fallback.slice(1)
  const trend=[...posts,...fallback].filter((p,i,a)=>a.findIndex(x=>x.title===p.title)===i).slice(0,5)
  return <main className="blog-shell">
-  <header className="blog-nav"><Link href="/" className="blog-brand">Tushar Sharma</Link><nav><Link href="/">Home</Link><Link className="active" href="/blog">Writing</Link><Link href="/#projects">Projects</Link><Link href="/#now">Now</Link><Link href="/about">About</Link></nav><div className="nav-tools"><label className="search"><Search/><input aria-label="Search articles" placeholder="Search articles, topics, ideas..."/><kbd>⌘ K</kbd></label><a href="mailto:tusharsharma123456.k20@gmail.com" className="blog-button dark">Get in touch <ArrowRight/></a></div></header>
-  <aside className="blog-side"><p className="side-label">Writing</p><h1>Ideas, learnings<br/>and experiments<br/>in public.</h1><p className="side-copy">Notes on software engineering, distributed systems, AI, products and building a meaningful life.</p><div className="filters">{[[Newspaper,'All Posts','42'],[PanelTop,'Systems','12'],[BrainCircuit,'AI & LLMs','8'],[TrendingUp,'Product & Growth','6'],[Map,'Building in Public','10'],[Settings,'Engineering','5'],[Sparkles,'Life','4']].map((x,i)=>{const FilterIcon=x[0];return <a className={i===0?'selected':''} href="#latest" key={String(x[1])}><i><FilterIcon/></i>{String(x[1])}<small>{String(x[2])}</small></a>})}</div><div className="side-links"><a href="mailto:tusharsharma123456.k20@gmail.com"><Mail/> Newsletter <span><ArrowRight/></span></a><a href="/blog"><Rss/> RSS Feed <span><ArrowRight/></span></a></div><blockquote>“A collection of thoughts from a curious developer figuring things out.”<strong>• Tushar</strong></blockquote></aside>
+  <header className="blog-nav"><Link href="/" className="blog-brand">Tushar Sharma</Link><nav><Link href="/">Home</Link><Link className="active" href="/blog">Writing</Link><Link href="/projects">Projects</Link><Link href="/now">Now</Link><Link href="/about">About</Link></nav><div className="nav-tools"><label className="search"><Search/><input aria-label="Search articles" placeholder="Search articles, topics, ideas..."/><kbd>⌘ K</kbd></label><a href={'mailto:'+siteLinks.email} className="blog-button dark">Get in touch <ArrowRight/></a></div></header>
+  <aside className="blog-side"><p className="side-label">Writing</p><h1>Ideas, learnings<br/>and experiments<br/>in public.</h1><p className="side-copy">Notes on software engineering, distributed systems, AI, products and building a meaningful life.</p><div className="filters">{[[Newspaper,'All Posts','42'],[PanelTop,'Systems','12'],[BrainCircuit,'AI & LLMs','8'],[TrendingUp,'Product & Growth','6'],[Map,'Building in Public','10'],[Settings,'Engineering','5'],[Sparkles,'Life','4']].map((x,i)=>{const FilterIcon=x[0];return <a className={i===0?'selected':''} href="#latest" key={String(x[1])}><i><FilterIcon/></i>{String(x[1])}<small>{String(x[2])}</small></a>})}</div><div className="side-links"><a href={'mailto:'+siteLinks.email}><Mail/> Newsletter <span><ArrowRight/></span></a><a href="/blog"><Rss/> RSS Feed <span><ArrowRight/></span></a></div><blockquote>“A collection of thoughts from a curious developer figuring things out.”<strong>• Tushar</strong></blockquote></aside>
   <div className="blog-main">
    <section className="blog-hero"><div className="hero-words"><h2>Better software<br/>through <em>clearer thinking.</em></h2><p>Deep dives, practical guides and honest reflections on software engineering, distributed systems, AI and the journey of building in public.</p><div><a className="blog-button dark" href="#latest">Explore all posts →</a><a className="blog-button" href="#newsletter">✉ Subscribe</a></div></div><div className="hero-art" aria-hidden><span/><span/><span/><span/><b>Systems<br/>Products<br/>AI<br/>Life</b></div></section>
    <div className="blog-grid"><div className="feed"><Link className="feature-card" href={href(featured.slug)}><div className="server-art" aria-hidden>{Array.from({length:14},(_,i)=><i key={i}/>)}</div><div className="feature-copy"><small>● Featured</small><h2>{featured.title}</h2><p>{featured.description}</p><footer><span>▣ {fmt(featured.publishedAt)}  ·  {mins(featured)} min read</span><div>{featured.tags.slice(0,3).map(t=><b key={t}>{t}</b>)}</div></footer></div></Link>

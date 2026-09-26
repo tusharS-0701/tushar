@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { isAdmin, isAdminConfigured } from '../../lib/admin-auth'
-import { getDatabaseStatus, listPosts } from '../../lib/posts'
+import { getDatabaseStatus, getSiteLinks, listPosts } from '../../lib/posts'
 import { login } from './actions'
 import { AdminShell } from './AdminShell'
 import { PostForm } from './PostForm'
+import { SiteLinksForm } from './SiteLinksForm'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Admin | Tushar Sharma', robots: { index: false, follow: false } }
 
-type Props = { searchParams: Promise<{ error?: string; deleted?: string }> }
+type Props = { searchParams: Promise<{ error?: string; deleted?: string; linksSaved?: string }> }
 
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams
@@ -35,15 +36,22 @@ export default async function AdminPage({ searchParams }: Props) {
 
   const databaseStatus = await getDatabaseStatus()
   const posts = await listPosts(true)
+  const siteLinks = await getSiteLinks()
   return <AdminShell title="Blog posts" subtitle="Write, publish, and manage your articles." count={posts.length}>
     {params.error && <p role="alert" className="admin-alert admin-alert--error">{params.error}</p>}
     {params.deleted && <p className="admin-alert admin-alert--success">Post deleted.</p>}
+    {params.linksSaved && <p className="admin-alert admin-alert--success">Site links updated.</p>}
     {databaseStatus === 'unconfigured' && <p role="alert" className="admin-alert admin-alert--error">Add Firebase service account credentials before saving posts.</p>}
     {databaseStatus === 'missing' && <p role="alert" className="admin-alert admin-alert--error">Create the default Cloud Firestore database in the Firebase Console before saving posts.</p>}
 
     <section className="admin-card admin-editor-card">
       <div className="admin-card-heading"><div><span className="admin-card-icon">＋</span><div><h2>New article</h2><p>Create a draft or publish a new post.</p></div></div></div>
       <PostForm />
+    </section>
+
+    <section className="admin-card admin-editor-card">
+      <div className="admin-card-heading"><div><span className="admin-card-icon">↗</span><div><h2>Site links</h2><p>Update social profiles, contact details, résumé, and support links.</p></div></div></div>
+      <SiteLinksForm links={siteLinks} />
     </section>
 
     <section className="admin-card admin-posts-card">
