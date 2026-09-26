@@ -2,11 +2,12 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowRight, AtSign as Twitter, Briefcase as Linkedin, CodeXml as Github, Moon } from 'lucide-react'
+import { ArrowRight, Moon } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArticleActions } from '../../../components/article/ArticleActions'
 import { KafkaDiagram } from '../../../components/article/KafkaDiagram'
+import { GithubIcon, InstagramIcon, LinkedinIcon, XIcon } from '../../../components/icons/Icons'
 import { getPost, getSiteLinks, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
@@ -47,7 +48,7 @@ export default async function ArticlePage({ params }: Props) {
   const Heading = ({ children }: { children?: ReactNode }) => <h2 id={slugify(textFromNode(children))}>{children}</h2>
 
   return <main className="article-page">
-    <header className="article-site-header"><div className="article-progress"><span /></div><div className="article-header-inner"><Link href="/" className="article-brand">Tushar Sharma</Link><nav aria-label="Primary"><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/now">Now</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a><button aria-label="Change color theme"><Moon /></button></nav></div></header>
+    <header className="article-site-header"><div className="article-progress"><span /></div><div className="article-header-inner"><Link href="/" className="article-brand">Tushar Sharma</Link><nav aria-label="Primary"><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/products">Products</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a><button aria-label="Change color theme"><Moon /></button></nav></div></header>
     <div className="article-layout">
       <ArticleActions url={url} />
       <article className="article-main" id="article">
@@ -59,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
       <aside className="article-toc"><strong>On this page</strong><nav>{toc.length ? toc.map((item, index) => <a className={index === 0 ? 'active' : ''} href={`#${item.id}`} key={item.id}>{item.label}</a>) : <a className="active" href="#article">Introduction</a>}</nav></aside>
     </div>
     <section className="article-related"><header><h2>Continue reading</h2><Link href="/blog">More posts <ArrowRight /></Link></header><div>{related.map((item, index) => <Link href={`/blog/${item.slug}`} key={item.slug} className="related-card"><span><small>{item.tags[0] || 'Ideas'}</small><strong>{item.title}</strong><p>{item.description}</p><time>{formatDate(item.publishedAt)} · {readingTime(item.body)} min read</time></span><i aria-hidden>{index === 0 ? '⌘' : '→'}</i></Link>)}</div></section>
-    <footer className="article-footer"><div><strong>Tushar Sharma</strong><nav><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/now">Now</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a></nav><span>{siteLinks.github&&<a href={siteLinks.github} aria-label="GitHub"><Github/></a>}{siteLinks.linkedin&&<a href={siteLinks.linkedin} aria-label="LinkedIn"><Linkedin/></a>}{siteLinks.x&&<a href={siteLinks.x} aria-label="X / Twitter"><Twitter/></a>}<Moon /></span></div></footer>
+    <footer className="article-footer"><div><strong>Tushar Sharma</strong><nav><Link href="/blog">Blogs</Link><Link href="/projects">Projects</Link><Link href="/products">Products</Link><Link href="/about">About</Link><a href={'mailto:'+siteLinks.email}>Contact</a></nav><span>{siteLinks.x&&<a href={siteLinks.x} aria-label="X / Twitter"><XIcon/></a>}{siteLinks.linkedin&&<a href={siteLinks.linkedin} aria-label="LinkedIn"><LinkedinIcon/></a>}{siteLinks.github&&<a href={siteLinks.github} aria-label="GitHub"><GithubIcon/></a>}{siteLinks.instagram&&<a href={siteLinks.instagram} aria-label="Instagram"><InstagramIcon/></a>}<Moon /></span></div></footer>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
   </main>
 }

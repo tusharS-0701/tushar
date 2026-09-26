@@ -43,7 +43,7 @@ export const navItems: NavItem[] = [
   { href: '/blog', label: 'Journal' },
   { href: '/projects', label: 'Projects' },
   { href: '#notes', label: 'Notes' },
-  { href: '/now', label: 'Now' },
+  { href: '/products', label: 'Products' },
   { href: '#contact', label: 'Contact' },
 ]
 
@@ -137,7 +137,7 @@ export const deskNote = {
 export const footerContent = {
   editorial:
     'This is a personal publication by Tushar Sharma. All articles are original and written in public.',
-  sections: ['Journal', 'Projects', 'Notes', 'Now'],
+  sections: ['Journal', 'Projects', 'Notes', 'Products'],
   quote: {
     text: 'The best way to predict the future is to build it.',
     author: 'Alan Kay',
