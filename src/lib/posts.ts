@@ -8,6 +8,8 @@ export type Post = {
   description: string
   body: string
   tags: string[]
+  coverImage: string
+  coverImageAlt: string
   status: 'draft' | 'published'
   createdAt: string
   updatedAt: string
@@ -25,13 +27,13 @@ export type SiteLinks = {
 }
 
 export const defaultSiteLinks: SiteLinks = {
-  x: '',
+  x: 'https://x.com/mach__07',
   instagram: 'https://www.instagram.com/tushar07.sh/',
   linkedin: 'https://www.linkedin.com/in/tusharsharma0711/',
-  github: 'https://github.com/side-quest2001',
+  github: 'https://github.com/tusharS-0701',
   email: 'tusharsharma123456.k20@gmail.com',
   resume: 'https://drive.google.com/file/d/1R-MtU9szsqtFahJBXpDOCMfY3szmDOHb/view?usp=drive_link',
-  support: '',
+  support: 'https://buymeacoffee.com/tusharsharma',
 }
 
 const collectionName = 'posts'

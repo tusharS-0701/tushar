@@ -30,17 +30,19 @@ export async function upsertPost(data: FormData) {
   const previousSlug = field(data, 'previousSlug')
   const description = field(data, 'description')
   const body = field(data, 'body')
+  const coverImage = field(data, 'coverImage')
+  const coverImageAlt = field(data, 'coverImageAlt')
   const tags = field(data, 'tags').split(',').map((tag) => tag.trim()).filter(Boolean).slice(0, 10)
   const status = field(data, 'status') === 'published' ? 'published' : 'draft'
-  if (!validSlug(slug) || title.length < 3 || title.length > 140 || description.length < 20 || description.length > 320 || body.length < 20 || body.length > 200000) {
-    redirect('/admin?error=Check%20the%20title%2C%20description%2C%20and%20body')
+  if (!validSlug(slug) || title.length < 3 || title.length > 140 || description.length < 20 || description.length > 320 || body.length < 20 || body.length > 200000 || !coverImage || !validWebUrl(coverImage) || coverImageAlt.length < 5 || coverImageAlt.length > 180) {
+    redirect('/admin?error=Check%20the%20title%2C%20description%2C%20cover%20image%2C%20alt%20text%2C%20and%20body')
   }
   const existing = previousSlug ? await getPost(previousSlug) : await getPost(slug)
   if (previousSlug && !existing) redirect('/admin?error=Post%20not%20found')
   if (previousSlug !== slug && await getPost(slug)) redirect('/admin?error=Slug%20already%20exists')
   const now = new Date().toISOString()
   await savePost({
-    slug, title, description, body, tags, status,
+    slug, title, description, body, tags, status, coverImage, coverImageAlt,
     createdAt: existing?.createdAt || now,
     updatedAt: now,
     publishedAt: status === 'published' ? existing?.publishedAt || now : null,

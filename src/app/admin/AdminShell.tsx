@@ -34,6 +34,6 @@ export function AdminShell({ children, title, subtitle, count }: { children: Rea
         </div>
       </div>
     </section>
-    <div className="admin-footer-note"><span>IDEAS&nbsp;&nbsp;/&nbsp;&nbsp;WRITING&nbsp;&nbsp;/&nbsp;&nbsp;A BETTER WEB</span><span>tushar.me</span></div>
+    <div className="admin-footer-note"><span>IDEAS&nbsp;&nbsp;/&nbsp;&nbsp;WRITING&nbsp;&nbsp;/&nbsp;&nbsp;A BETTER WEB</span><span>tusharsharma.me</span></div>
   </main>
 }

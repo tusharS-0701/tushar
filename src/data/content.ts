@@ -20,6 +20,7 @@ export type Dispatch = {
   title: string
   date: string
   href?: string
+  coverImage?: string
 }
 
 const currentYear = new Date().getFullYear()
@@ -27,7 +28,7 @@ const currentYear = new Date().getFullYear()
 export const siteMeta = {
   name: 'Tushar Sharma',
   location: 'Indore, India',
-  domain: 'tushar.me',
+  domain: 'tusharsharma.me',
   tagline: 'Engineer • Builder • Learner',
   volume: 'Vol. I',
   issue: 'No. 01',
@@ -41,7 +42,7 @@ export const navItems: NavItem[] = [
   { href: '#top', label: 'Home' },
   { href: '#about', label: 'About' },
   { href: '/blog', label: 'Journal' },
-  { href: '/projects', label: 'Projects' },
+  { href: '/services', label: 'Services' },
   { href: '#notes', label: 'Notes' },
   { href: '/products', label: 'Products' },
   { href: '#contact', label: 'Contact' },
@@ -49,12 +50,12 @@ export const navItems: NavItem[] = [
 
 export const socialLinks: SocialLink[] = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tusharsharma0711/', icon: 'linkedin' },
-  { label: 'GitHub', href: 'https://github.com/side-quest2001', icon: 'github' },
-  { label: 'Instagram', href: 'https://www.instagram.com/tushar07.sh/?hl=en', icon: 'instagram' },
+  { label: 'GitHub', href: 'https://github.com/tusharS-0701', icon: 'github' },
+  { label: 'Instagram', href: 'https://www.instagram.com/tushar07.sh/', icon: 'instagram' },
   { label: 'Email', href: `mailto:${siteMeta.email}`, icon: 'mail' },
 ]
 
-const GITHUB_PROFILE = 'https://github.com/side-quest2001'
+const GITHUB_PROFILE = 'https://github.com/tusharS-0701'
 
 export const projects: Project[] = [
   {
@@ -137,7 +138,7 @@ export const deskNote = {
 export const footerContent = {
   editorial:
     'This is a personal publication by Tushar Sharma. All articles are original and written in public.',
-  sections: ['Journal', 'Projects', 'Notes', 'Products'],
+  sections: ['Journal', 'Services', 'Notes', 'Products'],
   quote: {
     text: 'The best way to predict the future is to build it.',
     author: 'Alan Kay',
