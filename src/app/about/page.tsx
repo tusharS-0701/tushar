@@ -3,7 +3,14 @@ import { ArrowRight, BookOpen, Code2, Coffee, Network, Sparkles } from 'lucide-r
 import { GithubIcon } from '../../components/icons/Icons'
 import { getSiteLinks } from '../../lib/posts'
 
-export const metadata:Metadata={title:'About | Tushar Sharma',description:'Software engineer, builder and writer based in Indore, India.'}
+const description = 'Meet Tushar Sharma, a software engineer, product builder and fractional CTO based in Indore, India.'
+export const metadata: Metadata = {
+ title: 'About | Tushar Sharma',
+ description,
+ alternates: { canonical: '/about' },
+ openGraph: { title: 'About Tushar Sharma', description, url: '/about', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+ twitter: { card: 'summary_large_image', title: 'About Tushar Sharma', description, images: ['/logo.png'] },
+}
 const skills=['JavaScript','TypeScript','React','Node.js','Postgres','Docker','Kubernetes','AI / LLMs']
 const work=[[Code2,'Build products','Design, build and ship web applications, tools and AI native products.'],[BookOpen,'Write and share','Articles, notes and practical guides on system design, AI and building in public.'],[Network,'Explore systems','Distributed systems, scalable architectures and real world problem solving.'],[Sparkles,'Learn and experiment','Constantly learning new tools, models and ideas. Most of my learning happens in public.']] as const
 const journey=[['2022 – Present','Building products','Currently working on Pen, an AI-native content & marketing OS and exploring more ideas in public.'],['2021 – 2022','Full stack development','Worked on various web applications and freelance projects, gaining hands on experience across the stack.'],['2019 – 2021','Learning and experimenting','Explored different technologies, built side projects and developed a strong interest in system design and AI.'],['2016 – 2019','Found the love for building','Started my journey with programming and discovered how much I enjoy turning ideas into real products.']]

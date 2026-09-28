@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: 'Premium personal website for Tushar Sharma, a software engineer focused on scalable web systems, product building, and AI exploration.',
   keywords: ['Tushar Sharma', 'software engineer', 'TypeScript', 'JavaScript', 'React', 'Node.js', 'AI', 'ML', 'product builder', 'Indore'],
   authors: [{ name: 'Tushar Sharma' }],
+  creator: 'Tushar Sharma',
+  publisher: 'Tushar Sharma',
+  category: 'technology',
   icons: {
     icon: [
       { url: '/logo.png', type: 'image/png', sizes: '1254x1254' },
@@ -18,7 +21,17 @@ export const metadata: Metadata = {
     apple: [{ url: '/logo.png', sizes: '1254x1254', type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
-  robots: 'index, follow',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
@@ -41,29 +54,43 @@ export const viewport: Viewport = { themeColor: '#ffffff' }
 function profileStructuredData(links: SiteLinks) {
   return {
   '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  '@id': 'https://www.tusharsharma.me/#profile',
-  url: 'https://www.tusharsharma.me',
-  name: 'Tushar Sharma',
-  mainEntity: {
-    '@type': 'Person',
-    '@id': 'https://www.tusharsharma.me/#person',
-    name: 'Tushar Sharma',
-    url: 'https://www.tusharsharma.me',
-    image: {
-      '@type': 'ImageObject',
-      url: 'https://www.tusharsharma.me/logo.png',
-      width: 1254,
-      height: 1254,
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://www.tusharsharma.me/#website',
+      url: 'https://www.tusharsharma.me',
+      name: 'Tushar Sharma',
+      description: 'Software engineer, product builder and fractional CTO.',
+      inLanguage: 'en',
     },
-    sameAs: [links.x, links.linkedin, links.github, links.instagram].filter(Boolean),
-    jobTitle: 'Software Engineer',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Indore',
-      addressCountry: 'IN',
+    {
+      '@type': 'ProfilePage',
+      '@id': 'https://www.tusharsharma.me/#profile',
+      url: 'https://www.tusharsharma.me',
+      name: 'Tushar Sharma',
+      isPartOf: { '@id': 'https://www.tusharsharma.me/#website' },
+      mainEntity: { '@id': 'https://www.tusharsharma.me/#person' },
     },
-  },
+    {
+      '@type': 'Person',
+      '@id': 'https://www.tusharsharma.me/#person',
+      name: 'Tushar Sharma',
+      url: 'https://www.tusharsharma.me',
+      image: {
+        '@type': 'ImageObject',
+        url: 'https://www.tusharsharma.me/logo.png',
+        width: 1254,
+        height: 1254,
+      },
+      sameAs: [links.x, links.linkedin, links.github, links.instagram].filter(Boolean),
+      jobTitle: ['Software Engineer', 'Fractional CTO'],
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Indore',
+        addressCountry: 'IN',
+      },
+    },
+  ],
   }
 }
 

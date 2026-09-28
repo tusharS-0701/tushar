@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import { ArrowRight, BarChart3, Box, FileText, MessageSquare, Send, Settings, Zap } from 'lucide-react'
 
-export const metadata: Metadata = { title: 'Products | Tushar Sharma', description: 'Practical AI products built by Tushar Sharma, including Pen—the AI-native content and marketing OS.', alternates: { canonical: '/products' } }
+const description = 'Practical AI products built by Tushar Sharma, including Pen—the AI-native content and marketing OS.'
+export const metadata: Metadata = {
+ title: 'Products | Tushar Sharma',
+ description,
+ alternates: { canonical: '/products' },
+ openGraph: { title: 'Products by Tushar Sharma', description, url: '/products', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+ twitter: { card: 'summary_large_image', title: 'Products by Tushar Sharma', description, images: ['/logo.png'] },
+}
 const PEN_URL = 'https://pen.tusharsharma.me'
 const features = [[MessageSquare,'AI chat workspace'],[FileText,'Content CMS'],[BarChart3,'Built for distribution'],[Zap,'Early access']] as const
 

@@ -4,10 +4,13 @@ import { ArrowRight, BrainCircuit, ChevronLeft, ChevronRight, Flame, Mail, Map, 
 import { getSiteLinks, listPosts } from '../../lib/posts'
 
 export const revalidate = 300
+const description = 'Ideas, learnings and experiments in public on software engineering, distributed systems and AI.'
 export const metadata: Metadata = {
   title: 'Writing | Tushar Sharma',
-  description: 'Ideas, learnings and experiments in public on software engineering, distributed systems and AI.',
+  description,
   alternates: { canonical: '/blog' },
+  openGraph: { title: 'Writing by Tushar Sharma', description, url: '/blog', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+  twitter: { card: 'summary_large_image', title: 'Writing by Tushar Sharma', description, images: ['/logo.png'] },
 }
 
 const fallback: BlogCard[] = [

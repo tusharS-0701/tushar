@@ -3,10 +3,13 @@ import { ArrowRight, Blocks, Bot, Box, BriefcaseBusiness, Cloud, Code2, FileText
 import { getSiteLinks } from '../../lib/posts'
 import styles from './services.module.css'
 
+const description = 'Fractional CTO, product engineering, AI integration, architecture, and software development services for founders and small teams.'
 export const metadata: Metadata = {
   title: 'Services | Tushar Sharma',
-  description: 'Fractional CTO, product engineering, AI integration, architecture, and software development services for founders and small teams.',
+  description,
   alternates: { canonical: '/services' },
+  openGraph: { title: 'Product Engineering & Fractional CTO Services', description, url: '/services', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+  twitter: { card: 'summary_large_image', title: 'Product Engineering & Fractional CTO Services', description, images: ['/logo.png'] },
 }
 
 const services = [
