@@ -6,7 +6,6 @@ import { ArrowRight } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArticleActions } from '../../../components/article/ArticleActions'
-import { KafkaDiagram } from '../../../components/article/KafkaDiagram'
 import { getPost, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
@@ -40,18 +39,19 @@ export default async function ArticlePage({ params }: Props) {
   if (!post || post.status !== 'published') notFound()
   const url = `https://www.tusharsharma.me/blog/${post.slug}`
   const toc = headings(post.body)
-  const related = allPosts.filter((item) => item.slug !== post.slug).slice(0, 2)
+  const related = allPosts.filter((item) => item.slug !== post.slug).sort((a, b) => {
+    const shared = (item: typeof a) => item.tags.filter((tag) => post.tags.includes(tag)).length + (item.category === post.category ? 3 : 0)
+    return shared(b) - shared(a) || (b.publishedAt || b.updatedAt).localeCompare(a.publishedAt || a.updatedAt)
+  }).slice(0, 2)
   const minutes = readingTime(post.body)
-  const isKafkaPost = /kafka|partition/i.test(`${post.title} ${post.tags.join(' ')}`)
-  const structuredData = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, image: post.coverImage || undefined, datePublished: post.publishedAt, dateModified: post.updatedAt, author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://www.tusharsharma.me' }, mainEntityOfPage: url, url, keywords: post.tags.join(', ') }
+  const structuredData = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, articleSection: post.category, image: post.coverImage || undefined, datePublished: post.publishedAt, dateModified: post.updatedAt, author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://www.tusharsharma.me' }, mainEntityOfPage: url, url, keywords: post.tags.join(', ') }
   const Heading = ({ children }: { children?: ReactNode }) => <h2 id={slugify(textFromNode(children))}>{children}</h2>
 
   return <main className="article-page">
     <div className="article-layout">
       <ArticleActions url={url} />
       <article className="article-main" id="article">
-        <header className="article-lead"><p className="article-category">{post.tags[0] || 'Ideas'}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-byline"><img src="/pfp.png" alt="Tushar Sharma"/><p><strong>Tushar Sharma</strong><span>{formatDate(post.publishedAt)} · {minutes} min read</span></p></div>{post.coverImage&&<img className="article-cover" src={post.coverImage} alt={post.coverImageAlt||post.title}/>}</header>
-        {isKafkaPost && <KafkaDiagram />}
+        <header className="article-lead"><p className="article-category">{post.category || post.tags[0] || 'Ideas'}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-byline"><img src="/pfp.png" alt="Tushar Sharma"/><p><strong>Tushar Sharma</strong><span>{formatDate(post.publishedAt)} · {minutes} min read</span></p></div>{post.coverImage&&<img className="article-cover" src={post.coverImage} alt={post.coverImageAlt||post.title}/>}</header>
         <div className="article-prose"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h2: Heading }}>{post.body}</ReactMarkdown></div>
         <section className="article-author"><img src="/pfp.png" alt="Tushar Sharma"/><div><h2>Tushar Sharma</h2><p>Programmer | Building in Public | AI · Systems · Startups</p><p>I’m a software engineer who loves building things, exploring distributed systems, and writing about what I learn.</p></div><Link href="/blog">View all posts <ArrowRight /></Link></section>
       </article>

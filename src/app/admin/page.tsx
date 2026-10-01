@@ -1,16 +1,17 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { isAdmin, isAdminConfigured } from '../../lib/admin-auth'
-import { getDatabaseStatus, getSiteLinks, listPosts } from '../../lib/posts'
+import { getBlogSettings, getDatabaseStatus, getSiteLinks, listPosts } from '../../lib/posts'
 import { login } from './actions'
 import { AdminShell } from './AdminShell'
 import { PostForm } from './PostForm'
 import { SiteLinksForm } from './SiteLinksForm'
+import { BlogSettingsForm } from './BlogSettingsForm'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Admin | Tushar Sharma', robots: { index: false, follow: false } }
 
-type Props = { searchParams: Promise<{ error?: string; deleted?: string; linksSaved?: string }> }
+type Props = { searchParams: Promise<{ error?: string; deleted?: string; linksSaved?: string; blogSaved?: string }> }
 
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams
@@ -36,13 +37,19 @@ export default async function AdminPage({ searchParams }: Props) {
 
   const databaseStatus = await getDatabaseStatus()
   const posts = await listPosts(true)
-  const siteLinks = await getSiteLinks()
+  const [siteLinks, blogSettings] = await Promise.all([getSiteLinks(), getBlogSettings()])
   return <AdminShell title="Blog posts" subtitle="Write, publish, and manage your articles." count={posts.length}>
     {params.error && <p role="alert" className="admin-alert admin-alert--error">{params.error}</p>}
     {params.deleted && <p className="admin-alert admin-alert--success">Post deleted.</p>}
     {params.linksSaved && <p className="admin-alert admin-alert--success">Site links updated.</p>}
+    {params.blogSaved && <p className="admin-alert admin-alert--success">Blog content updated.</p>}
     {databaseStatus === 'unconfigured' && <p role="alert" className="admin-alert admin-alert--error">Add Firebase service account credentials before saving posts.</p>}
     {databaseStatus === 'missing' && <p role="alert" className="admin-alert admin-alert--error">Create the default Cloud Firestore database in the Firebase Console before saving posts.</p>}
+
+    <section className="admin-card admin-editor-card">
+      <div className="admin-card-heading"><div><span className="admin-card-icon">✦</span><div><h2>Blog page</h2><p>Edit the landing page copy shown around your articles.</p></div></div></div>
+      <BlogSettingsForm settings={blogSettings} />
+    </section>
 
     <section className="admin-card admin-editor-card">
       <div className="admin-card-heading"><div><span className="admin-card-icon">＋</span><div><h2>New article</h2><p>Create a draft or publish a new post.</p></div></div></div>

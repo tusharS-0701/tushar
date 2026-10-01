@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   category: 'technology',
   icons: {
     icon: [
-      { url: '/logo.png', type: 'image/png', sizes: '1254x1254' },
+      { url: '/favicon-512.png?v=2', type: 'image/png', sizes: '512x512' },
     ],
-    shortcut: '/logo.png',
-    apple: [{ url: '/logo.png', sizes: '1254x1254', type: 'image/png' }],
+    shortcut: '/favicon.ico?v=2',
+    apple: [{ url: '/favicon-512.png?v=2', sizes: '512x512', type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
   robots: {

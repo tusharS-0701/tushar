@@ -6,7 +6,10 @@ export default function nextConfig(phase) {
     // `.next` can leave the dev server referencing manifests the build removed.
     distDir: phase === PHASE_DEVELOPMENT_SERVER ? '.next-dev' : '.next',
     async redirects() {
-      return [{ source: '/projects', destination: '/services', permanent: true }]
+      return [
+        { source: '/projects', destination: '/services', permanent: true },
+        { source: '/favicon.ico', destination: '/favicon-512.png', permanent: false },
+      ]
     },
   }
 }

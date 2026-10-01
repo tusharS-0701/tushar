@@ -42,6 +42,9 @@
 .admin-field--wide { grid-column:1/-1; }
 .admin-field > span { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
 .admin-field small { color:#8991a9; font-size:11px; font-weight:400; }
+.admin-checks { display:flex; flex-wrap:wrap; gap:20px; font-size:13px; font-weight:500; }
+.admin-checks label { display:flex; align-items:center; gap:8px; }
+.admin-checks input { width:auto; }
 .admin-field input, .admin-field textarea, .admin-field select { width:100%; border:1px solid #d9deed; border-radius:8px; padding:11px 12px; outline:none; background:#fff; color:#17203a; font-size:14px; transition:border-color .16s,box-shadow .16s; }
 .admin-field input:focus, .admin-field textarea:focus, .admin-field select:focus { border-color:#716cff; box-shadow:0 0 0 3px rgba(91,85,255,.1); }
 .admin-field textarea { resize:vertical; line-height:1.6; }
