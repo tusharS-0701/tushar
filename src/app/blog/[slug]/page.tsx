@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArticleActions } from '../../../components/article/ArticleActions'
+import { ArticleToc } from '../../../components/article/ArticleToc'
 import { getPost, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
@@ -55,7 +56,7 @@ export default async function ArticlePage({ params }: Props) {
         <div className="article-prose"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h2: Heading }}>{post.body}</ReactMarkdown></div>
         <section className="article-author"><img src="/pfp.png" alt="Tushar Sharma"/><div><h2>Tushar Sharma</h2><p>Programmer | Building in Public | AI · Systems · Startups</p><p>I’m a software engineer who loves building things, exploring distributed systems, and writing about what I learn.</p></div><Link href="/blog">View all posts <ArrowRight /></Link></section>
       </article>
-      <aside className="article-toc"><strong>On this page</strong><nav>{toc.length ? toc.map((item, index) => <a className={index === 0 ? 'active' : ''} href={`#${item.id}`} key={item.id}>{item.label}</a>) : <a className="active" href="#article">Introduction</a>}</nav></aside>
+      <ArticleToc items={toc} />
     </div>
     <section className="article-related"><header><h2>Continue reading</h2><Link href="/blog">More posts <ArrowRight /></Link></header><div>{related.map((item, index) => <Link href={`/blog/${item.slug}`} key={item.slug} className="related-card"><span><small>{item.tags[0] || 'Ideas'}</small><strong>{item.title}</strong><p>{item.description}</p><time>{formatDate(item.publishedAt)} · {readingTime(item.body)} min read</time></span>{item.coverImage?<img src={item.coverImage} alt={item.coverImageAlt||item.title}/>:<i aria-hidden>{index === 0 ? '⌘' : '→'}</i>}</Link>)}</div></section>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
