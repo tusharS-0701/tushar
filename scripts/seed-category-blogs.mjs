@@ -10,6 +10,40 @@ const app = getApps()[0] || initializeApp({ credential: cert({ projectId: proces
 const database = getFirestore(app)
 const image = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1600&q=82`
 
+const readingByCategory = {
+  Systems: [
+    ['AWS Builders Library: Avoiding overload in distributed systems', 'https://aws.amazon.com/builders-library/avoiding-overload-in-distributed-systems-by-putting-the-smaller-service-in-control/'],
+    ['Apache Kafka design documentation', 'https://kafka.apache.org/documentation/#design'],
+  ],
+  'AI & LLMs': [
+    ['OpenAI evaluation guide', 'https://platform.openai.com/docs/guides/evals'],
+    ['OpenAI function calling guide', 'https://platform.openai.com/docs/guides/function-calling'],
+  ],
+  'Product & Growth': [
+    ['Google Analytics event measurement', 'https://developers.google.com/analytics/devguides/collection/ga4/events'],
+    ['GOV.UK guide to performance metrics', 'https://www.gov.uk/service-manual/measuring-success/how-to-set-performance-metrics-for-your-service'],
+  ],
+  'Building in Public': [
+    ['Google Search guidance on helpful content', 'https://developers.google.com/search/docs/fundamentals/creating-helpful-content'],
+    ['W3C tips for clear web writing', 'https://www.w3.org/WAI/tips/writing/'],
+  ],
+  Engineering: [
+    ['Node.js diagnostics working group resources', 'https://github.com/nodejs/diagnostics'],
+    ['OpenAPI specification', 'https://spec.openapis.org/oas/latest.html'],
+  ],
+  Life: [
+    ['CDC guidance on sleep and health', 'https://www.cdc.gov/sleep/about/index.html'],
+    ['WHO guidance on mental health at work', 'https://www.who.int/news-room/fact-sheets/detail/mental-health-at-work'],
+  ],
+}
+
+function withLinks(post) {
+  const sources = readingByCategory[post.category]
+  const links = sources.map(([label, url]) => `- [${label}](${url})`).join('\n')
+  const categoryUrl = encodeURIComponent(post.category)
+  return { ...post, body: `${post.body}\n\n## Further reading\n\n${links}\n\nExplore more [${post.category} articles](/blog?category=${categoryUrl}) from this journal.` }
+}
+
 function article({ intro, problem, practice, code, language = 'typescript', takeaway }) {
   return `${intro}
 
@@ -228,7 +262,8 @@ const existingCategories = {
 
 const batch = database.batch()
 const now = new Date().toISOString()
-for (const post of posts) {
+for (const rawPost of posts) {
+  const post = withLinks(rawPost)
   batch.set(database.collection('posts').doc(post.slug), { ...post, status: 'published', createdAt: post.publishedAt, updatedAt: now })
 }
 for (const [slug, category] of Object.entries(existingCategories)) {
