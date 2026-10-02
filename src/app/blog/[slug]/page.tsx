@@ -29,7 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} | Tushar Sharma`, description: post.description, keywords: post.tags,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { type: 'article', title: post.title, description: post.description, url: `/blog/${post.slug}`, publishedTime: post.publishedAt || undefined, modifiedTime: post.updatedAt, authors: ['Tushar Sharma'], tags: post.tags, images: post.coverImage ? [{ url: post.coverImage, alt: post.coverImageAlt || post.title }] : undefined },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
+    openGraph: { type: 'article', title: post.title, description: post.description, url: `/blog/${post.slug}`, publishedTime: post.publishedAt || undefined, modifiedTime: post.updatedAt, authors: ['Tushar Sharma'], section: post.category, tags: post.tags, images: post.coverImage ? [{ url: post.coverImage, alt: post.coverImageAlt || post.title }] : undefined },
     twitter: { card: 'summary_large_image', title: post.title, description: post.description, images: post.coverImage ? [post.coverImage] : undefined },
   }
 }
@@ -45,7 +46,7 @@ export default async function ArticlePage({ params }: Props) {
     return shared(b) - shared(a) || (b.publishedAt || b.updatedAt).localeCompare(a.publishedAt || a.updatedAt)
   }).slice(0, 2)
   const minutes = readingTime(post.body)
-  const structuredData = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, articleSection: post.category, image: post.coverImage || undefined, datePublished: post.publishedAt, dateModified: post.updatedAt, author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://www.tusharsharma.me' }, mainEntityOfPage: url, url, keywords: post.tags.join(', ') }
+  const structuredData = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, articleSection: post.category, image: post.coverImage || undefined, datePublished: post.publishedAt, dateModified: post.updatedAt, wordCount: post.body.trim().split(/\s+/).length, inLanguage: 'en', isAccessibleForFree: true, author: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://www.tusharsharma.me' }, publisher: { '@type': 'Person', name: 'Tushar Sharma', url: 'https://www.tusharsharma.me', image: 'https://www.tusharsharma.me/logo.png' }, mainEntityOfPage: { '@type': 'WebPage', '@id': url }, url, keywords: post.tags.join(', ') }
   const Heading = ({ children }: { children?: ReactNode }) => <h2 id={slugify(textFromNode(children))}>{children}</h2>
   const MarkdownLink = ({ href, children }: { href?: string; children?: ReactNode }) => {
     const external = href?.startsWith('http://') || href?.startsWith('https://')

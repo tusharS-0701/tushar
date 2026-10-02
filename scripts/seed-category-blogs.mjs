@@ -255,6 +255,7 @@ return ProjectResponse.parse(toPublicProject(project))`, takeaway: 'A durable AP
 ]
 
 const existingCategories = {
+  'why-ai-agents-need-sandboxes': 'AI & LLMs',
   'managed-ai-agents-are-becoming-a-platform-layer': 'AI & LLMs',
   'coding-agents-change-the-developers-job': 'Engineering',
   'the-next-ai-advantage-is-efficient-context': 'AI & LLMs',
