@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowRight } from 'lucide-react'
@@ -10,7 +11,14 @@ import { ArticleToc } from '../../../components/article/ArticleToc'
 import { getPost, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
+export const dynamicParams = false
 type Props = { params: Promise<{ slug: string }> }
+const fallbackSocialImage = '/logo.png'
+
+export async function generateStaticParams() {
+  const posts = await listPosts()
+  return posts.map(({ slug }) => ({ slug }))
+}
 
 const formatDate = (value: string | null) => value ? new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : ''
 const readingTime = (body: string) => Math.max(1, Math.ceil(body.trim().split(/\s+/).length / 220))
@@ -25,13 +33,14 @@ const headings = (body: string) => [...body.matchAll(/^##\s+(.+)$/gm)].map((matc
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = await getPost(slug)
-  if (!post || post.status !== 'published') return { title: 'Article not found', robots: { index: false } }
+  if (!post || post.status !== 'published') notFound()
+  const socialImage = post.coverImage || fallbackSocialImage
   return {
     title: `${post.title} | Tushar Sharma`, description: post.description, keywords: post.tags,
     alternates: { canonical: `/blog/${post.slug}` },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
-    openGraph: { type: 'article', title: post.title, description: post.description, url: `/blog/${post.slug}`, publishedTime: post.publishedAt || undefined, modifiedTime: post.updatedAt, authors: ['Tushar Sharma'], section: post.category, tags: post.tags, images: post.coverImage ? [{ url: post.coverImage, alt: post.coverImageAlt || post.title }] : undefined },
-    twitter: { card: 'summary_large_image', title: post.title, description: post.description, images: post.coverImage ? [post.coverImage] : undefined },
+    openGraph: { type: 'article', title: post.title, description: post.description, url: `/blog/${post.slug}`, publishedTime: post.publishedAt || undefined, modifiedTime: post.updatedAt, authors: ['Tushar Sharma'], section: post.category, tags: post.tags, images: [{ url: socialImage, alt: post.coverImageAlt || (post.coverImage ? post.title : 'Tushar Sharma logo') }] },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.description, images: [socialImage] },
   }
 }
 
@@ -57,13 +66,13 @@ export default async function ArticlePage({ params }: Props) {
     <div className="article-layout">
       <ArticleActions url={url} />
       <article className="article-main" id="article">
-        <header className="article-lead"><p className="article-category">{post.category || post.tags[0] || 'Ideas'}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-byline"><img src="/pfp.png" alt="Tushar Sharma"/><p><strong>Tushar Sharma</strong><span>{formatDate(post.publishedAt)} · {minutes} min read</span></p></div>{post.coverImage&&<img className="article-cover" src={post.coverImage} alt={post.coverImageAlt||post.title}/>}</header>
+        <header className="article-lead"><p className="article-category">{post.category || post.tags[0] || 'Ideas'}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-byline"><Image src="/pfp.webp" width={41} height={41} sizes="41px" alt="Tushar Sharma"/><p><strong>Tushar Sharma</strong><span>{formatDate(post.publishedAt)} · {minutes} min read</span></p></div>{post.coverImage&&<img className="article-cover" src={post.coverImage} alt={post.coverImageAlt||post.title} width={1600} height={900}/>}</header>
         <div className="article-prose"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h2: Heading, a: MarkdownLink }}>{post.body}</ReactMarkdown></div>
-        <section className="article-author"><img src="/pfp.png" alt="Tushar Sharma"/><div><h2>Tushar Sharma</h2><p>Programmer | Building in Public | AI · Systems · Startups</p><p>I’m a software engineer who loves building things, exploring distributed systems, and writing about what I learn.</p></div><Link href="/blog">View all posts <ArrowRight /></Link></section>
+        <section className="article-author"><Image src="/pfp.webp" width={55} height={55} sizes="55px" alt="Tushar Sharma"/><div><h2>Tushar Sharma</h2><p>Programmer | Building in Public | AI · Systems · Startups</p><p>I’m a software engineer who loves building things, exploring distributed systems, and writing about what I learn.</p></div><Link href="/blog">View all posts <ArrowRight /></Link></section>
       </article>
       <ArticleToc items={toc} />
     </div>
-    <section className="article-related"><header><h2>Continue reading</h2><Link href="/blog">More posts <ArrowRight /></Link></header><div>{related.map((item, index) => <Link href={`/blog/${item.slug}`} key={item.slug} className="related-card"><span><small>{item.tags[0] || 'Ideas'}</small><strong>{item.title}</strong><p>{item.description}</p><time>{formatDate(item.publishedAt)} · {readingTime(item.body)} min read</time></span>{item.coverImage?<img src={item.coverImage} alt={item.coverImageAlt||item.title}/>:<i aria-hidden>{index === 0 ? '⌘' : '→'}</i>}</Link>)}</div></section>
+    <section className="article-related"><header><h2>Continue reading</h2><Link href="/blog">More posts <ArrowRight /></Link></header><div>{related.map((item, index) => <Link href={`/blog/${item.slug}`} key={item.slug} className="related-card"><span><small>{item.tags[0] || 'Ideas'}</small><strong>{item.title}</strong><p>{item.description}</p><time>{formatDate(item.publishedAt)} · {readingTime(item.body)} min read</time></span>{item.coverImage?<img src={item.coverImage} alt={item.coverImageAlt||item.title} width={1600} height={900}/>:<i aria-hidden>{index === 0 ? '⌘' : '→'}</i>}</Link>)}</div></section>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
   </main>
 }

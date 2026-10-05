@@ -6,7 +6,7 @@ export const metadata: Metadata = {
  title: 'Products | Tushar Sharma',
  description,
  alternates: { canonical: '/products' },
- openGraph: { title: 'Products by Tushar Sharma', description, url: '/products', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+ openGraph: { title: 'Products by Tushar Sharma', description, url: '/products', images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tushar Sharma logo' }] },
  twitter: { card: 'summary_large_image', title: 'Products by Tushar Sharma', description, images: ['/logo.png'] },
 }
 const PEN_URL = 'https://pen.tusharsharma.me'

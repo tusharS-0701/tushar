@@ -1,4 +1,5 @@
 import { heroAbout } from '../../data/content'
+import Image from 'next/image'
 import { Reveal } from '../atoms/Reveal'
 
 export function HeroAbout() {
@@ -9,7 +10,7 @@ export function HeroAbout() {
       </Reveal>
       <Reveal delay={0.08} className="hero-about-grid">
         <div className="portrait-frame">
-          <img src="/pfp.png" alt="Tushar Sharma" className="portrait-photo" />
+          <Image src="/pfp.webp" width={800} height={1063} sizes="(max-width: 768px) 100vw, 50vw" alt="Tushar Sharma" className="portrait-photo" />
         </div>
         <div className="hero-about-copy">
           <p>{heroAbout.bodyOne}</p>

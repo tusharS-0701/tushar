@@ -8,7 +8,7 @@ export default function nextConfig(phase) {
     async redirects() {
       return [
         { source: '/projects', destination: '/services', permanent: true },
-        { source: '/favicon.ico', destination: '/logo.png', permanent: false },
+        { source: '/now', destination: '/products', permanent: true },
       ]
     },
   }

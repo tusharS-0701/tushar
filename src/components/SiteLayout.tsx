@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { GithubIcon, InstagramIcon, LinkedinIcon, XIcon } from './icons/Icons'
@@ -44,7 +45,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   return <div className="flex min-h-screen flex-col bg-white text-slate-950">
     <header className="z-50 mb-2 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-base font-extrabold tracking-tight"><img src="/logo.png" alt="" className="h-9 w-9 rounded-lg object-cover" />Tushar Sharma</Link>
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-base font-extrabold tracking-tight"><Image src="/logo.webp" width={36} height={36} sizes="36px" alt="" className="h-9 w-9 rounded-lg object-cover" />Tushar Sharma</Link>
         <nav ref={desktopNav} className="site-primary-nav relative hidden h-full items-center gap-7 text-xs text-slate-600 md:flex" aria-label="Primary navigation">
           <span className="site-nav-indicator" style={{ width: indicator.width, transform: `translateX(${indicator.left}px)`, opacity: indicator.visible ? 1 : 0 }} aria-hidden />
           {navigation.map((item, index) => {
@@ -61,7 +62,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <div className="flex-1">{children}</div>
     <footer className="mt-auto border-t border-slate-200 bg-white text-slate-950">
       <div className="mx-auto grid min-h-28 w-full max-w-6xl items-center gap-6 px-4 py-6 sm:px-6 md:grid-cols-[1fr_auto_auto]">
-        <div className="flex items-center gap-3"><img src="/logo.png" alt="Tushar Sharma logo" className="h-10 w-10 rounded-lg object-cover" /><div><strong className="text-sm">Tushar Sharma</strong><p className="mt-1 max-w-sm text-[11px] leading-relaxed text-slate-500">Software engineer, builder and writer. Building products and sharing what I learn.</p></div></div>
+        <div className="flex items-center gap-3"><Image src="/logo.webp" width={40} height={40} sizes="40px" alt="Tushar Sharma logo" className="h-10 w-10 rounded-lg object-cover" /><div><strong className="text-sm">Tushar Sharma</strong><p className="mt-1 max-w-sm text-[11px] leading-relaxed text-slate-500">Software engineer, builder and writer. Building products and sharing what I learn.</p></div></div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-slate-600" aria-label="Footer navigation">{navigation.slice(1).map((item) => <Link className="hover:text-blue-600" href={item.href} key={item.href}>{item.label}</Link>)}</nav>
         <div className="flex items-center gap-4">{socials.map(({ href, label, Icon }) => <a className="text-slate-500 transition-colors hover:text-blue-600" href={href} target="_blank" rel="noreferrer" aria-label={label} key={label}><Icon className="h-4 w-4" /></a>)}</div>
       </div>

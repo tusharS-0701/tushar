@@ -7,7 +7,7 @@ import { SiteLayout } from '../components/SiteLayout'
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.tusharsharma.me'),
   title: 'Tushar Sharma | Software Engineer, Builder, Problem Solver',
-  description: 'Premium personal website for Tushar Sharma, a software engineer focused on scalable web systems, product building, and AI exploration.',
+  description: 'Tushar Sharma is a software engineer, builder, and writer exploring scalable systems, AI, and product development.',
   keywords: ['Tushar Sharma', 'software engineer', 'TypeScript', 'JavaScript', 'React', 'Node.js', 'AI', 'ML', 'product builder', 'Indore'],
   authors: [{ name: 'Tushar Sharma' }],
   creator: 'Tushar Sharma',
@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   category: 'technology',
   icons: {
     icon: [
-      { url: '/logo.png?v=3', type: 'image/png', sizes: '1254x1254' },
+      { url: '/favicon.png?v=4', type: 'image/png', sizes: '48x48' },
     ],
-    shortcut: '/favicon.ico?v=3',
-    apple: [{ url: '/logo.png?v=3', sizes: '1254x1254', type: 'image/png' }],
+    shortcut: '/favicon.png?v=4',
+    apple: [{ url: '/apple-touch-icon.png?v=4', sizes: '180x180', type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
   robots: {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description: '4+ years of experience shipping software, building products, and turning ideas into scalable systems.',
     url: 'https://www.tusharsharma.me',
     siteName: 'Tushar Sharma',
-    images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }],
+    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tushar Sharma logo' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#ffffff' }
 
-function profileStructuredData(links: SiteLinks) {
+function siteStructuredData(links: SiteLinks) {
   return {
   '@context': 'https://schema.org',
   '@graph': [
@@ -64,14 +64,6 @@ function profileStructuredData(links: SiteLinks) {
       inLanguage: 'en',
     },
     {
-      '@type': 'ProfilePage',
-      '@id': 'https://www.tusharsharma.me/#profile',
-      url: 'https://www.tusharsharma.me',
-      name: 'Tushar Sharma',
-      isPartOf: { '@id': 'https://www.tusharsharma.me/#website' },
-      mainEntity: { '@id': 'https://www.tusharsharma.me/#person' },
-    },
-    {
       '@type': 'Person',
       '@id': 'https://www.tusharsharma.me/#person',
       name: 'Tushar Sharma',
@@ -79,8 +71,8 @@ function profileStructuredData(links: SiteLinks) {
       image: {
         '@type': 'ImageObject',
         url: 'https://www.tusharsharma.me/logo.png',
-        width: 1254,
-        height: 1254,
+        width: 512,
+        height: 512,
       },
       sameAs: [links.x, links.linkedin, links.github, links.instagram].filter(Boolean),
       jobTitle: ['Software Engineer', 'Fractional CTO'],
@@ -94,11 +86,11 @@ function profileStructuredData(links: SiteLinks) {
   }
 }
 
-async function ProfileStructuredData() {
+async function SiteStructuredData() {
   const siteLinks = await getSiteLinks()
   return <script
     type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData(siteLinks)).replace(/</g, '\\u003c') }}
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(siteStructuredData(siteLinks)).replace(/</g, '\\u003c') }}
   />
 }
 
@@ -110,7 +102,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <SiteLayout>{children}</SiteLayout>
-        <Suspense fallback={null}><ProfileStructuredData /></Suspense>
+        <Suspense fallback={null}><SiteStructuredData /></Suspense>
       </body>
     </html>
   )

@@ -5,6 +5,16 @@ import { getSiteLinks, listPosts } from '../lib/posts'
 
 export const revalidate = 300
 
+const profileStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  '@id': 'https://www.tusharsharma.me/#profile',
+  url: 'https://www.tusharsharma.me',
+  name: 'Tushar Sharma',
+  isPartOf: { '@id': 'https://www.tusharsharma.me/#website' },
+  mainEntity: { '@id': 'https://www.tusharsharma.me/#person' },
+}
+
 async function HomeContent() {
   const [posts, siteLinks] = await Promise.all([listPosts(), getSiteLinks()])
   const dispatches = posts.slice(0, 4).map((post) => ({
@@ -22,5 +32,8 @@ async function HomeContent() {
 }
 
 export default function Home() {
-  return <Suspense fallback={<AppSkeleton />}><HomeContent /></Suspense>
+  return <>
+    <Suspense fallback={<AppSkeleton />}><HomeContent /></Suspense>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData).replace(/</g, '\\u003c') }} />
+  </>
 }

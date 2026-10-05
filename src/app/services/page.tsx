@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Services | Tushar Sharma',
   description,
   alternates: { canonical: '/services' },
-  openGraph: { title: 'Product Engineering & Fractional CTO Services', description, url: '/services', images: [{ url: '/logo.png', width: 1254, height: 1254, alt: 'Tushar Sharma logo' }] },
+  openGraph: { title: 'Product Engineering & Fractional CTO Services', description, url: '/services', images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tushar Sharma logo' }] },
   twitter: { card: 'summary_large_image', title: 'Product Engineering & Fractional CTO Services', description, images: ['/logo.png'] },
 }
 
