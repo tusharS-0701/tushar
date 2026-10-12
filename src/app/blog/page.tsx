@@ -14,8 +14,9 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: 'Writing by Tushar Sharma', description, images: ['/logo.png'] },
 }
 
-type Props = { searchParams: Promise<{ category?: string; subscribed?: string; subscribeError?: string }> }
+type Props = { searchParams: Promise<{ category?: string; page?: string; subscribed?: string; subscribeError?: string }> }
 const icons = [PanelTop, BrainCircuit, TrendingUp, MapIcon, Settings, Sparkles]
+const postsPerPage = 6
 const fmt = (date: string | null) => date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : ''
 const mins = (post: Post) => Math.max(1, Math.ceil(post.body.trim().split(/\s+/).filter(Boolean).length / 220))
 
@@ -31,7 +32,16 @@ export default async function BlogPage({ searchParams }: Props) {
   const selectedCategory = params.category && blogCategories.some((category) => category === params.category) ? params.category : undefined
   const filtered = selectedCategory ? posts.filter((post) => (post.category || 'Engineering') === selectedCategory) : posts
   const featured = filtered.find((post) => post.featured) || filtered[0]
-  const latest = filtered
+  const totalPages = Math.max(1, Math.ceil(filtered.length / postsPerPage))
+  const requestedPage = Number.parseInt(params.page || '1', 10)
+  const currentPage = Number.isFinite(requestedPage) ? Math.min(Math.max(requestedPage, 1), totalPages) : 1
+  const latest = filtered.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage)
+  const pageHref = (page: number) => {
+    const query = new URLSearchParams()
+    if (selectedCategory) query.set('category', selectedCategory)
+    if (page > 1) query.set('page', String(page))
+    return `/blog${query.size ? `?${query.toString()}` : ''}#latest`
+  }
   const markedTrending = posts.filter((post) => post.trending).slice(0, 5)
   const trend = markedTrending.length ? markedTrending : posts.slice(0, 5)
 
@@ -44,7 +54,7 @@ export default async function BlogPage({ searchParams }: Props) {
       <section className="blog-hero"><div className="hero-words"><h2>{settings.heroTitle}</h2><p>{settings.heroDescription}</p><div><a className="blog-button dark" href="#latest">Explore all posts →</a><a className="blog-button" href="#newsletter">✉ Subscribe</a></div></div><div className="hero-art" aria-hidden><span /><span /><span /><span /><b>{blogCategories.slice(0, 4).join('\n')}</b></div></section>
       <div className="blog-grid"><div className="feed">
         {featured ? <Link className={`feature-card${featured.coverImage ? ' has-cover' : ''}`} href={`/blog/${featured.slug}`}>{featured.coverImage ? <img className="feature-cover" src={featured.coverImage} alt={featured.coverImageAlt || featured.title} width={1600} height={1067} /> : <div className="server-art" aria-hidden>{Array.from({ length: 14 }, (_, i) => <i key={i} />)}</div>}<div className="feature-copy"><small>● Featured</small><h2>{featured.title}</h2><p>{featured.description}</p><div className="feature-meta"><span>▣ {fmt(featured.publishedAt)} · {mins(featured)} min read</span><div>{featured.tags.slice(0, 3).map((tag) => <b key={tag}>{tag}</b>)}</div></div></div></Link> : <section className="blog-empty"><h2>No published articles yet</h2><p>New writing will appear here as soon as it is published.</p></section>}
-        <section className="latest" id="latest"><header><h2>{selectedCategory ? `${selectedCategory} articles` : 'Latest articles'}</h2>{selectedCategory && <Link href="/blog" scroll={false}>View all →</Link>}</header>{latest.length ? <div className="latest-grid">{latest.map((post, index) => <Link href={`/blog/${post.slug}`} className="latest-card" key={post.slug}>{post.coverImage ? <img className="latest-cover" src={post.coverImage} alt={post.coverImageAlt || post.title} width={1600} height={1067} /> : <div className={`latest-art art-${index % 3}`}><i /></div>}<small>{post.category || 'Engineering'} · {fmt(post.publishedAt)}</small><h3>{post.title}</h3><p>{post.description}</p><div className="latest-meta"><span>{mins(post)} min read</span><b aria-hidden>→</b></div></Link>)}</div> : featured && <p className="blog-empty-inline">No other articles match this filter.</p>}</section>
+        <section className="latest" id="latest"><header><h2>{selectedCategory ? `${selectedCategory} articles` : 'Latest articles'}</h2>{selectedCategory && <Link href="/blog" scroll={false}>View all →</Link>}</header>{latest.length ? <><div className="latest-grid">{latest.map((post, index) => <Link href={`/blog/${post.slug}`} className="latest-card" key={post.slug}>{post.coverImage ? <img className="latest-cover" src={post.coverImage} alt={post.coverImageAlt || post.title} width={1600} height={1067} /> : <div className={`latest-art art-${index % 3}`}><i /></div>}<small>{post.category || 'Engineering'} · {fmt(post.publishedAt)}</small><h3>{post.title}</h3><p>{post.description}</p><div className="latest-meta"><span>{mins(post)} min read</span><b aria-hidden>→</b></div></Link>)}</div>{totalPages > 1 && <nav className="blog-pagination" aria-label="Blog pagination"><Link className={currentPage === 1 ? 'disabled' : ''} href={pageHref(currentPage - 1)} aria-disabled={currentPage === 1} tabIndex={currentPage === 1 ? -1 : undefined}>← Previous</Link><div>{Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => <Link className={page === currentPage ? 'active' : ''} href={pageHref(page)} aria-current={page === currentPage ? 'page' : undefined} key={page}>{page}</Link>)}</div><Link className={currentPage === totalPages ? 'disabled' : ''} href={pageHref(currentPage + 1)} aria-disabled={currentPage === totalPages} tabIndex={currentPage === totalPages ? -1 : undefined}>Next →</Link></nav>}</> : featured && <p className="blog-empty-inline">No articles match this filter.</p>}</section>
       </div><aside className="right-rail">{trend.length > 0 && <section className="trending"><header><b><TrendingUp /> Trending</b></header>{trend.map((post, index) => <Link href={`/blog/${post.slug}`} key={post.slug}><i>{String(index + 1).padStart(2, '0')}</i><span>{post.title}<small>{mins(post)} min read</small></span></Link>)}</section>}<section className="newsletter" id="newsletter"><small><Sparkles /> Newsletter</small><h2>{settings.newsletterTitle}</h2><p>{settings.newsletterDescription}</p><form action={subscribe}><input type="email" name="email" required aria-label="Email address" placeholder="Enter your email" /><button aria-label="Subscribe"><ArrowRight /></button></form>{params.subscribed && <span className="newsletter-status">You’re subscribed.</span>}{params.subscribeError && <span className="newsletter-status">Please try again.</span>}<div className="orb" /></section></aside></div>
     </div>
   </main>
