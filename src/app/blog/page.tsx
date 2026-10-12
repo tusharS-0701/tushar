@@ -31,7 +31,7 @@ export default async function BlogPage({ searchParams }: Props) {
   const selectedCategory = params.category && blogCategories.some((category) => category === params.category) ? params.category : undefined
   const filtered = selectedCategory ? posts.filter((post) => (post.category || 'Engineering') === selectedCategory) : posts
   const featured = filtered.find((post) => post.featured) || filtered[0]
-  const latest = filtered.filter((post) => post.slug !== featured?.slug)
+  const latest = filtered
   const markedTrending = posts.filter((post) => post.trending).slice(0, 5)
   const trend = markedTrending.length ? markedTrending : posts.slice(0, 5)
 
