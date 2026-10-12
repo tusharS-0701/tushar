@@ -11,7 +11,7 @@ import { ArticleToc } from '../../../components/article/ArticleToc'
 import { getPost, listPosts, slugify } from '../../../lib/posts'
 
 export const revalidate = 300
-export const dynamicParams = false
+export const dynamicParams = true
 type Props = { params: Promise<{ slug: string }> }
 const fallbackSocialImage = '/logo.png'
 
