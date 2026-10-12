@@ -1,29 +1,57 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { ArrowRight, BookOpen, Code2, Coffee, Network, Sparkles } from 'lucide-react'
+import { ArrowRight, Coffee, MapPin } from 'lucide-react'
 import { GithubIcon } from '../../components/icons/Icons'
 import { getSiteLinks } from '../../lib/posts'
+import styles from './about.module.css'
 
-const description = 'Meet Tushar Sharma, a software engineer, product builder and fractional CTO based in Indore, India.'
+const description = 'Meet Tushar Sharma, a software engineer and product builder based in Indore, India.'
 export const metadata: Metadata = {
- title: 'About | Tushar Sharma',
- description,
- alternates: { canonical: '/about' },
- openGraph: { title: 'About Tushar Sharma', description, url: '/about', images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tushar Sharma logo' }] },
- twitter: { card: 'summary_large_image', title: 'About Tushar Sharma', description, images: ['/logo.png'] },
+  title: 'About | Tushar Sharma', description,
+  alternates: { canonical: '/about' },
+  openGraph: { title: 'About Tushar Sharma', description, url: '/about', images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tushar Sharma logo' }] },
+  twitter: { card: 'summary_large_image', title: 'About Tushar Sharma', description, images: ['/logo.png'] },
 }
-const skills=['JavaScript','TypeScript','React','Node.js','Postgres','Docker','Kubernetes','AI / LLMs']
-const work=[[Code2,'Build products','Design, build and ship web applications, tools and AI native products.'],[BookOpen,'Write and share','Articles, notes and practical guides on system design, AI and building in public.'],[Network,'Explore systems','Distributed systems, scalable architectures and real world problem solving.'],[Sparkles,'Learn and experiment','Constantly learning new tools, models and ideas. Most of my learning happens in public.']] as const
-const journey=[['2022 – Present','Building products','Currently working on Pen, an AI-native content & marketing OS and exploring more ideas in public.'],['2021 – 2022','Full stack development','Worked on various web applications and freelance projects, gaining hands on experience across the stack.'],['2019 – 2021','Learning and experimenting','Explored different technologies, built side projects and developed a strong interest in system design and AI.'],['2016 – 2019','Found the love for building','Started my journey with programming and discovered how much I enjoy turning ideas into real products.']]
 
-export default async function AboutPage(){
- const links=await getSiteLinks()
- const EMAIL=links.email
- const GITHUB=links.github
- return <main className="about-page">
- <section className="about-hero about-wrap"><div className="about-photo"><Image src="/pfp.webp" alt="Tushar Sharma" fill sizes="(max-width: 760px) calc(100vw - 32px), 390px" priority/><span>Building<br/>Learning<br/>Sharing<br/> – Tushar</span></div><div className="about-intro"><p className="about-label">● About</p><h1>I’m Tushar Sharma.<em>I build software, learn<br/>in public, and write<br/>about the journey.</em></h1><p className="about-lede">I’m a software engineer and independent builder based in Indore, India. I work at the intersection of distributed systems, AI and practical products. This website is where I share what I’m building, what I’m learning, and honest notes from the journey.</p><div className="about-facts"><p>⌖ <span><b>Indore, India</b>Based in</span></p><p>▱ <span><b>Open to opportunities</b>Full-time / Remote</span></p><p>▣ <span><b>4+ years</b>Building software</span></p><a href={'mailto:'+EMAIL}>▤ <span><b>Support<br/>my work</b></span>→</a></div></div></section>
- <section className="what about-wrap"><div className="what-head"><div><p className="about-label">What I do</p><h2>Turn ideas into<br/>working products.</h2></div><p>I like taking ideas from 0 → 1, whether it’s a personal project, an open source tool, or a full product. I enjoy working across the stack, thinking about system design and distribution, and sharing everything I learn along the way.</p></div><div className="work-grid">{work.map(([WorkIcon,title,description])=><article key={title}><i><WorkIcon/></i><h3>{title}</h3><p>{description}</p></article>)}</div></section>
- <section className="support about-wrap"><div className="github-panel"><small><GithubIcon/> Github</small><h2>My code is public.</h2><p>You can find all my projects, experiments and contributions on GitHub. It’s the best place to see what I’m currently working on and how I build things.</p><div className="stats"><b>150+<span>Repositories</span></b><b>1.2k+<span>Commits</span></b><b>Open Source<span>Active contributor</span></b></div><a className="about-btn outline" href={GITHUB} target="_blank" rel="noreferrer">View my GitHub <ArrowRight/></a><div className="git-art"><GithubIcon/></div></div><div className="coffee-panel"><small><Coffee/> Support my work</small><h2>Buy me a coffee.</h2><p>If my content, open source work or tools have helped you, consider supporting me. It helps me stay independent and keep creating useful content.</p><ul><li>Keeps me motivated</li><li>Helps me work on open source tools</li><li>Supports more in-depth writing</li></ul><a className="about-btn coffee" href={links.support||'mailto:'+EMAIL+'?subject=Support your work'} target={links.support?'_blank':undefined} rel={links.support?'noreferrer':undefined}><Coffee/> Buy me a coffee <ArrowRight/></a><div className="cup">♥</div></div></section>
- <section className="tech about-wrap"><div><h2>Tech &amp; interests</h2><small>Tools I enjoy working with and topics I care about.</small></div><div>{skills.map((s,i)=><span key={s}><i>{['⌁','T','⚛','⬡','♜','◆','◉','♧'][i]}</i>{s}</span>)}</div></section>
- <section className="journey about-wrap"><div className="journey-copy"><p className="about-label">My journey</p><h2>A bit of my<br/>journey so far.</h2><p>I’ve always been curious about how things work, from computers to systems to businesses. Over the years I’ve moved from just using technology to building with it, and now I’m focused on creating things that are useful, meaningful and long lasting.</p><a className="about-btn" href={links.resume} target="_blank" rel="noreferrer">View my résumé →</a></div><div className="timeline">{journey.map(x=><article key={x[0]}><time>{x[0]}</time><div><b>{x[1]}</b><p>{x[2]}</p></div></article>)}</div><aside className="right-now"><p>● Right now</p><div><i>▣</i><span><b>Working on Pen</b>AI-native content and marketing OS</span></div><div><i>♧</i><span><b>Writing regularly</b>Notes on systems, AI and building in public</span></div><div><i>⌾</i><span><b>Exploring AI &amp; distributed systems</b>Learning, experimenting and sharing</span></div><div><i>♙</i><span><b>Looking for opportunities</b>Open to full-time roles and interesting projects</span></div></aside></section>
- </main>}
+const experience = [
+  ['2022 — Present', 'Building products', 'Working on independent products, including Pen, while exploring practical applications of AI and distributed systems.'],
+  ['2021 — 2022', 'Full stack development', 'Built web applications and freelance projects across product interfaces, APIs, databases, and deployment.'],
+  ['2019 — 2021', 'Learning through projects', 'Explored new technologies through side projects and developed a deeper interest in system design and AI.'],
+  ['2016 — 2019', 'Started building', 'Discovered programming and the satisfaction of turning an idea into something people can use.'],
+] as const
+
+export default async function AboutPage() {
+  const links = await getSiteLinks()
+  const supportHref = links.support || `mailto:${links.email}?subject=Support your work`
+
+  return <main className={styles.page}>
+    <section className={`${styles.hero} ${styles.wrap}`}>
+      <div className={styles.portrait}><Image src="/pfp.webp" alt="Tushar Sharma" fill sizes="(max-width: 760px) calc(100vw - 32px), 420px" priority/></div>
+      <div className={styles.intro}>
+        <p className={styles.eyebrow}>About</p>
+        <h1>I’m Tushar Sharma.<span>I build software and share what I learn.</span></h1>
+        <p className={styles.lede}>I’m a software engineer and independent builder working at the intersection of practical products, distributed systems, and AI. This is where I document the work and the lessons behind it.</p>
+        <div className={styles.heroMeta}><span><MapPin/> Indore, India</span><span>Open to opportunities</span></div>
+        <a className={styles.textLink} href={links.linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowRight/></a>
+      </div>
+    </section>
+
+    <section className={`${styles.experience} ${styles.wrap}`}>
+      <header><div><p className={styles.eyebrow}>Experience</p><h2>Learning by building.</h2></div><div><p>My path has been shaped by hands-on work: shipping products, learning systems, and improving through each project.</p><a href={links.resume} target="_blank" rel="noreferrer">View résumé <ArrowRight/></a></div></header>
+      <div className={styles.timeline}>{experience.map(([period, title, detail], index) => <article key={period}>
+        <div className={styles.marker}><span>{String(index + 1).padStart(2, '0')}</span></div>
+        <time>{period}</time>
+        <div><h3>{title}</h3><p>{detail}</p></div>
+      </article>)}</div>
+    </section>
+
+    <section className={`${styles.support} ${styles.wrap}`}>
+      <a className={styles.githubCard} href={links.github} target="_blank" rel="noreferrer">
+        <span className={styles.cardIcon}><GithubIcon/></span><p className={styles.eyebrow}>GitHub</p><h2>My code is public.</h2><p>Explore the products, experiments, and open-source work that show how I approach building.</p><span className={styles.cardLink}>View my GitHub <ArrowRight/></span>
+      </a>
+      <a className={styles.coffeeCard} href={supportHref} target={links.support ? '_blank' : undefined} rel={links.support ? 'noreferrer' : undefined}>
+        <span className={styles.cardIcon}><Coffee/></span><p className={styles.eyebrow}>Support my work</p><h2>Buy me a coffee.</h2><p>If my writing or open-source work has helped you, your support helps me keep creating and sharing.</p><span className={styles.cardLink}>Buy me a coffee <ArrowRight/></span>
+      </a>
+    </section>
+  </main>
+}
