@@ -14,7 +14,7 @@ export function ConnectBox() {
       <StampButton href={siteMeta.resumeUrl} target="_blank" rel="noreferrer" className="mt-5">
         View Résumé
       </StampButton>
-      <ArrowLink href={`mailto:${siteMeta.email}`} className="mt-4">
+      <ArrowLink href="https://www.linkedin.com/in/tusharsharma0711/" target="_blank" rel="noreferrer" className="mt-4">
         Get in touch
       </ArrowLink>
     </SidebarBox>

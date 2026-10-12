@@ -14,7 +14,7 @@ const navigation = [
   { href: '/about', label: 'About' },
 ]
 
-const email = 'tusharsharma123456.k20@gmail.com'
+const linkedin = 'https://www.linkedin.com/in/tusharsharma0711/'
 const socials = [
   { href: 'https://x.com/mach__07', label: 'X / Twitter', Icon: XIcon },
   { href: 'https://www.linkedin.com/in/tusharsharma0711/', label: 'LinkedIn', Icon: LinkedinIcon },
@@ -53,7 +53,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             return <Link ref={(element) => { desktopLinks.current[index] = element }} key={item.href} href={item.href} className={`relative flex h-full items-center transition-colors duration-300 hover:text-slate-950 ${active ? 'font-semibold text-slate-950' : ''}`}>{item.label}</Link>
           })}
         </nav>
-        <a href={`mailto:${email}`} className="inline-flex h-9 shrink-0 items-center rounded-lg bg-slate-950 px-4 text-xs font-semibold !text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Contact me</a>
+        <a href={linkedin} target="_blank" rel="noreferrer" className="inline-flex h-9 shrink-0 items-center rounded-lg bg-slate-950 px-4 text-xs font-semibold !text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Contact me</a>
       </div>
       <nav className="flex items-center justify-center gap-5 overflow-x-auto border-t border-slate-100 px-4 py-2 text-[11px] text-slate-600 md:hidden" aria-label="Mobile navigation">
         {navigation.map((item) => <Link key={item.href} href={item.href} className={`transition-colors duration-300 ${pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)) ? 'font-semibold text-blue-600' : ''}`}>{item.label}</Link>)}

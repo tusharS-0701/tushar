@@ -19,7 +19,7 @@ const services = [
 
 export default async function ServicesPage() {
   const links = await getSiteLinks()
-  const contactHref = `mailto:${links.email}?subject=Let’s work together`
+  const contactHref = links.linkedin
   const structuredData = {
     '@context': 'https://schema.org', '@type': 'ProfessionalService', name: 'Tushar Sharma — Product Engineering',
     url: 'https://www.tusharsharma.me/services', email: links.email, description, areaServed: 'Worldwide',
@@ -34,7 +34,7 @@ export default async function ServicesPage() {
           <h1>Turn ideas into<br/><span>working products.</span></h1>
           <p className={styles.heroText}>I help founders, creators, and small teams build, ship, and grow software products—from the first useful version to a dependable platform.</p>
           <div className={styles.heroActions}>
-            <a className={styles.primaryButton} href={contactHref}>Work with me <ArrowRight /></a>
+            <a className={styles.primaryButton} href={contactHref} target="_blank" rel="noreferrer">Work with me <ArrowRight /></a>
             <a className={styles.secondaryLink} href="#services">View process <ArrowRight /></a>
           </div>
         </div>
@@ -61,12 +61,12 @@ export default async function ServicesPage() {
       </div>
       <div className={styles.serviceGrid}>{services.map(({ icon: Icon, title, description: serviceDescription }) => <article className={styles.serviceCard} key={title}>
         <span className={styles.serviceIcon}><Icon /></span><h3>{title}</h3><p>{serviceDescription}</p>
-        <a href={contactHref} aria-label={`Discuss ${title}`}>Explore service <ArrowRight /></a>
+        <a href={contactHref} target="_blank" rel="noreferrer" aria-label={`Discuss ${title} on LinkedIn`}>Explore service <ArrowRight /></a>
       </article>)}</div>
     </section>
 
     <section className={styles.contact}>
-      <div><p className={styles.eyebrow}>Let’s work together</p><h2>Have a project<br/><span>in mind?</span></h2><p>Whether you have a clear idea or want to explore the possibilities, I’d love to hear from you.</p><a className={styles.primaryButton} href={contactHref}>Get in touch <ArrowRight /></a></div>
+      <div><p className={styles.eyebrow}>Let’s work together</p><h2>Have a project<br/><span>in mind?</span></h2><p>Whether you have a clear idea or want to explore the possibilities, I’d love to hear from you.</p><a className={styles.primaryButton} href={contactHref} target="_blank" rel="noreferrer">Get in touch <ArrowRight /></a></div>
     </section>
 
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
